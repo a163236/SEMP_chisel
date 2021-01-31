@@ -14,18 +14,18 @@ class IMEM_IO extends Bundle{
 class IMEM extends Module{
   val io = IO(new IMEM_IO)
 
-  val bram = Module(new IMEM_BlackBox())
+  val bram = Module(new I_memory_bram())
   bram.io <> io
-  bram.io.CLK := clock  // 必要
+  bram.io.CLK := clock  // 必要 これがないとCLKが入らないから
 
 }
 
 // bram
-class IMEM_BlackBox extends BlackBox(Map(
-  "MEMSIZE"->4*1024,
+class I_memory_bram extends BlackBox(Map(
+  "MEM_SIZE"->4*1024,
   "INST_NUM"->FETCH_NUM,
   "ADDR_WIDTH"->ADDR_WIDTH,
-  "FETCH_WIDHT"->FETCH_WIDTH,
+  "FETCH_WIDTH"->FETCH_WIDTH,
 )) with HasBlackBoxResource {
   val io = IO(new IMEM_IO)
   addResource("/I_memory_bram.v")

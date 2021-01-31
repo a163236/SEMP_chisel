@@ -1,1 +1,1 @@
-C:\Users\keita\IdeaProjects\SEMP_chisel\I_memory_bram.v
+/home/keita/GitHub/SEMP_chisel/I_memory_bram.v
