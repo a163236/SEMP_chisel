@@ -6,7 +6,7 @@ import SEMP.Memory.IMEM
 import chisel3._
 import common._
 
-class temp extends Module{
+class temp(implicit val conf: SEMPconfig) extends Module{
   val io = IO(new Bundle() {
     val if_pipeline = new IF_Pipeline_IO()
 

@@ -5,11 +5,6 @@ import chisel3.util._
 
 trait SEMP_Constants{
 
-  val ADDR_WIDTH = 32
-  val INST_WIDTH = 32
-  val FETCH_NUM = 2
-  val FETCH_WIDTH = ADDR_WIDTH * FETCH_NUM
-
   val RS1_MSB = 19  // instからレジスタ1への最上位ビット
   val RS1_LSB = 15  // instからレジスタ1への最下位ビット
   val RS2_MSB = 24
@@ -18,6 +13,8 @@ trait SEMP_Constants{
   val RD_LSB  = 7
   val CSR_ADDR_MSB = 31
   val CSR_ADDR_LSB = 20
+
+  val INST_WIDTH = 32 // 1命令のbit幅
 
   val START_ADDR = "h00000000"  // MTVEC + 0x100 ?
 }

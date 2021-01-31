@@ -5,7 +5,7 @@ import chisel3._
 import chisel3.aop.Select.Printf
 import common._
 
-class IF_Stage_IO extends Bundle {
+class IF_Stage_IO(implicit val conf: SEMPconfig) extends Bundle {
   val imem = Flipped(new IMEM_IO)
   val stall = Input(Bool())
   val flush = Input(Bool())
@@ -14,14 +14,14 @@ class IF_Stage_IO extends Bundle {
 
 }
 
-class IF_Stage extends Module{
+class IF_Stage(implicit val conf: SEMPconfig) extends Module{
   val io = IO(new IF_Stage_IO)
 
   // レジスタ
-  val PC = RegInit(START_ADDR.U(ADDR_WIDTH.W))
+  val PC = RegInit(START_ADDR.U(conf.xlen.W))
 
   // 配線
-  val PC_next = WireInit(START_ADDR.U(ADDR_WIDTH.W))
+  val PC_next = WireInit(START_ADDR.U(conf.xlen.W))
   val IF_valid = WireInit(false.B)
 
   PC := PC_next;
@@ -51,8 +51,8 @@ class IF_Stage extends Module{
   io.pipeline.if_valid := IF_valid
 }
 
-class IF_Pipeline_IO extends Bundle{
-  val pc = Output(UInt(ADDR_WIDTH.W))
-  val inst = Output(UInt(FETCH_WIDTH.W))
+class IF_Pipeline_IO(implicit val conf: SEMPconfig) extends Bundle{
+  val pc = Output(UInt(conf.xlen.W))
+  val inst = Output(UInt(conf.fetch_width.W))
   val if_valid = Output(Bool())
 }

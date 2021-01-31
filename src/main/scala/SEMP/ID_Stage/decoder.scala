@@ -5,12 +5,12 @@ import chisel3.util._
 import common.Instructions._
 import common._
 
-class decoder_IO extends Bundle{
+class decoder_IO(implicit val conf: SEMPconfig) extends Bundle{
   val inst = Input(UInt(INST_WIDTH.W))
   val csignals = Output(UInt(BR_Type_WIDTH.W))
 }
 
-class decoder extends Module{
+class decoder(implicit val conf: SEMPconfig) extends Module{
   val io = IO(new decoder_IO)
 
   // control signal
