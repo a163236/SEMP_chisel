@@ -12,7 +12,7 @@ module I_memory_bram #(
   output reg [FETCH_WIDTH-1:0] resp_data // 出力データ	64bit
 );
 
-  (* RAM_STYLE="BLOCK" *) reg [FETCH_WIDTH-1:0] mem [0: MEM_SIZE - 1];	// 32bit * size
+  (* RAM_STYLE="BLOCK" *) reg [ADDR_WIDTH-1:0] mem [0: MEM_SIZE - 1];	// 32bit * size
 
 	initial begin
 		$readmemh("memory.mem", mem);

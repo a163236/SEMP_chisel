@@ -9,7 +9,7 @@ import common._
 class temp(implicit val conf: SEMPconfig) extends Module{
   val io = IO(new Bundle() {
     val if_pipeline = new IF_Pipeline_IO()
-
+    val id_pipeline = new ID_Pipeline_IO()
   })
 
   val IF_Stage = Module(new IF_Stage)
@@ -19,13 +19,13 @@ class temp(implicit val conf: SEMPconfig) extends Module{
   val ID_Stage = Module(new ID_Stage)
   ID_Stage.io := DontCare
 
-
   // memory <-> IF
   IMEM.io <> IF_Stage.io.imem
   IF_Stage.io.pipeline <> ID_Stage.io.if_pipeline
 
   // 出力
   io.if_pipeline <> IF_Stage.io.pipeline
+  io.id_pipeline <> ID_Stage.io.id_pipeline
 
 }
 

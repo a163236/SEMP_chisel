@@ -5,12 +5,29 @@ import chisel3.util._
 
 trait SEMP_Constants{
 
+  val OP_MSB = 6
+  val OP_LSB = 0
+  val OP_WIDTH = OP_MSB-OP_LSB + 1
   val RS1_MSB = 19  // instからレジスタ1への最上位ビット
   val RS1_LSB = 15  // instからレジスタ1への最下位ビット
+  val RS1_WIDTH = RS1_MSB-RS1_LSB + 1
   val RS2_MSB = 24
   val RS2_LSB = 20
+  val RS2_WIDTH = RS2_MSB-RS2_LSB + 1
   val RD_MSB  = 11  // 書き込みレジスタアドレス
   val RD_LSB  = 7
+  val RD_WIDTH = RD_MSB-RD_LSB + 1
+  val FUNCT3_MSB = 14
+  val FUNCT3_LSB = 12
+  val FUNCT3_WIDTH = FUNCT3_MSB-FUNCT3_LSB + 1
+  val FUNCT7_MSB = 31
+  val FUNCT7_LSB = 25
+  val FUNCT7_WIDTH = FUNCT7_MSB-FUNCT7_LSB + 1
+
+  // A拡張
+  val AQ_bit = 26
+  val RL_bit = 25
+
   val CSR_ADDR_MSB = 31
   val CSR_ADDR_LSB = 20
 

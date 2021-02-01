@@ -10,6 +10,8 @@ class ID_Stage_IO(implicit val conf: SEMPconfig) extends Bundle{
   val baka = if(conf.simulation==true) Input(Bool()) else null
   val exception = Input(Bool())
   val if_pipeline = Flipped(new IF_Pipeline_IO())
+
+  // 出力
   val id_pipeline = new ID_Pipeline_IO()
 }
 
@@ -19,12 +21,20 @@ class ID_Stage(implicit val conf: SEMPconfig) extends Module{
   val decoder1 = Module(new decoder())
   val decoder2 = Module(new decoder())
 
+  // 各デコーダに命令をそれぞれいれる
   decoder1.io.inst := io.if_pipeline.inst(INST_WIDTH-1, 0)
   decoder2.io.inst := io.if_pipeline.inst(INST_WIDTH*2-1, INST_WIDTH)
-  io.id_pipeline.csignals := decoder1.io.csignals
+
+
+  // 出力
+  // 各デコーダからの出力を受け取る
+  io.id_pipeline.inst1 := decoder1.io.decoded_inst
+  io.id_pipeline.inst2 := decoder2.io.decoded_inst
 
 }
 
 class ID_Pipeline_IO extends Bundle {
-  val csignals = Output(UInt(BR_Type_WIDTH.W))
+  val inst1 = new ID_deocoded_info()
+  val inst2 = new ID_deocoded_info()
 }
+
