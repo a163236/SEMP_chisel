@@ -9,9 +9,9 @@ class IF_Stage_IO(implicit val conf: SEMPconfig) extends Bundle {
   val imem = Flipped(new IMEM_IO)
   val stall = Input(Bool())
   val flush = Input(Bool())
+  val flush_tid = Input(UInt(conf.thread_width.W))  // どの実スレッドをフラッシュするか
   val exception = Input(Bool())
   val pipeline = new IF_Pipeline_IO()
-
 }
 
 class IF_Stage(implicit val conf: SEMPconfig) extends Module{
@@ -49,10 +49,15 @@ class IF_Stage(implicit val conf: SEMPconfig) extends Module{
   io.pipeline.pc := RegNext(PC)
   io.pipeline.inst := io.imem.resp_data
   io.pipeline.if_valid := IF_valid
+  io.pipeline.if_tid := 0.U
+
+  printf("inst=[%x] ", io.pipeline.inst)
+  printf("\n")
 }
 
 class IF_Pipeline_IO(implicit val conf: SEMPconfig) extends Bundle{
   val pc = Output(UInt(conf.xlen.W))
   val inst = Output(UInt(conf.fetch_width.W))
   val if_valid = Output(Bool())
+  val if_tid = Output(UInt(conf.thread_width.W))
 }
