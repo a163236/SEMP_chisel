@@ -10,6 +10,7 @@ class IF_Stage_IO(implicit val conf: SEMPconfig) extends Bundle {
   val stall = Input(Bool())
   val flush = Input(Bool())
   val flush_tid = Input(UInt(conf.thread_width.W))  // どの実スレッドをフラッシュするか
+  val marumo = Input(Bool())
   val exception = Input(Bool())
   val pipeline = new IF_Pipeline_IO()
 }
