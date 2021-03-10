@@ -17,11 +17,15 @@ class temp(implicit val conf: SEMPconfig) extends Module{
 
   val IMEM = Module(new IMEM)
   val ID_Stage = Module(new ID_Stage)
+  val PhyRegFile = Reg(Vec(conf.xpregnum, UInt(conf.xlen.W)))
   ID_Stage.io := DontCare
 
   // memory <-> IF
   IMEM.io <> IF_Stage.io.imem
   IF_Stage.io.pipeline <> ID_Stage.io.if_pipeline
+
+
+
 
   // 出力
   io.if_pipeline <> IF_Stage.io.pipeline

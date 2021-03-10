@@ -4,6 +4,8 @@ import chisel3._
 
 case class SEMPconfig(
                        xlen: Int = 32, // 汎用レジスタの長さ
+                       xlogregnum: Int = 32, // 論理レジスタの数
+                       xpregnum: Int = 100, // 物理レジスタの数
                        fetch_num_param: Int = 2,
                        thread_num_param: Int = 2,
                        simulation: Boolean = false, // シミュレーションならtrue
