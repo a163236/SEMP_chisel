@@ -1,18 +1,24 @@
-name := "SEMP_chisel"
+// See README.md for license details.
 
-version := "0.1"
+ThisBuild / scalaVersion     := "2.12.13"
+ThisBuild / version          := "1.0.0"
+ThisBuild / transitiveClassifiers := Seq(Artifact.SourceClassifier)
 
-scalaVersion := "2.12.13"
-
-scalacOptions ++= Seq("-deprecation", "-feature", "-unchecked", "-language:reflectiveCalls", "-Xsource:2.11")
-
-resolvers ++= Seq(
-  Resolver.sonatypeRepo("snapshots"),
-  Resolver.sonatypeRepo("releases")
-)
-
-//addCompilerPlugin("edu.berkeley.cs" %% "chisel3-plugin" % "latest.release" cross CrossVersion.full)
-
-libraryDependencies += "edu.berkeley.cs" %% "chisel3" % "latest.release"
-libraryDependencies += "edu.berkeley.cs" %% "chiseltest" % "latest.release"
-//libraryDependencies += "edu.berkeley.cs" %% "rocketchip" % "latest.release"
+lazy val root = (project in file("."))
+  .settings(
+    name := "SEMP_chisel",
+    libraryDependencies ++= Seq(
+      "edu.berkeley.cs" %% "chisel3" % "latest.release",
+      "org.easysoc" %% "layered-firrtl" % "latest.release",
+      "edu.berkeley.cs" %% "chiseltest" % "latest.release"
+    ),
+    scalacOptions ++= Seq(
+      "-Xsource:2.11",
+      "-language:reflectiveCalls",
+      "-deprecation",
+      "-feature",
+      "-Xcheckinit"
+    ),
+    addCompilerPlugin("edu.berkeley.cs" % "chisel3-plugin" % "3.4.+" cross CrossVersion.full),
+    addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full)
+  )
