@@ -15,14 +15,18 @@ class RN_Stage_IO(implicit val conf: SEMPconfig) extends Bundle{
 class RN_Stage(implicit val conf: SEMPconfig) extends Module{
   val io = IO(new RN_Stage_IO())
 
-  val maptable = Reg(Vec(conf.xlogregnum, UInt(conf.xlen.W)))   // 論理レジスタと物理レジスタのマップ
+  val maptable_t1 = Reg(Vec(conf.xlogregnum, UInt(conf.xlen.W)))   // 論理レジスタと物理レジスタのマップ
+  val speculac_maptable_t1 = Reg(Vec(conf.xlogregnum, UInt(conf.xlen.W))) // 投機的マップ表
+
+  val maptable_t2 = Reg(Vec(conf.xlogregnum, UInt(conf.xlen.W)))   // 論理レジスタと物理レジスタのマップ
+  val speculac_maptable_t2 = Reg(Vec(conf.xlogregnum, UInt(conf.xlen.W))) // 投機的マップ表
 
   // フリーリスト
   val freelist = Reg(Vec(conf.xpregnum, UInt(conf.xpregnum.U.getWidth.W)))  // 物理レジスタ番号の数もつ
   val head = RegInit(0.U(conf.xpregnum.W))
   val tail = RegInit(((conf.xpregnum-1).U)(conf.xpregnum.W))  // headから入れてtailから出す
 
-  maptable(io.id_pipeline.inst1.rd) := freelist(tail)
+  maptable_t1(io.id_pipeline.inst1.rd) := freelist(tail)
   tail := tail - 1.U
 
 

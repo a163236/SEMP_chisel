@@ -29,8 +29,9 @@ class ID_Stage(implicit val conf: SEMPconfig) extends Module{
   // 出力
   // 各デコーダからの出力を受け取る
   io.id_pipeline.inst1 := decoder1.io.decoded_inst
+  io.id_pipeline.inst1_valid := true.B
   io.id_pipeline.inst2 := decoder2.io.decoded_inst
-
+  io.id_pipeline.inst2_valid := true.B
 }
 
 class ID_Pipeline_IO extends Bundle {

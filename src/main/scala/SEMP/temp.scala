@@ -24,12 +24,16 @@ class temp(implicit val conf: SEMPconfig) extends Module{
   IMEM.io <> IF_Stage.io.imem
   IF_Stage.io.pipeline <> ID_Stage.io.if_pipeline
 
-
-
-
-  // 出力
+    // 出力
   io.if_pipeline <> IF_Stage.io.pipeline
   io.id_pipeline <> ID_Stage.io.id_pipeline
+
+
+  // debug
+  printf("inst=[%x] ", IF_Stage.io.pipeline.inst)
+  printf("inst1_rd=[%x] ", ID_Stage.io.id_pipeline.inst1.rd)
+  printf("\n")
+
 
 }
 

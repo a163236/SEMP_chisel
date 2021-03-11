@@ -51,8 +51,6 @@ class IF_Stage(implicit val conf: SEMPconfig) extends Module{
   io.pipeline.if_valid := IF_valid
   io.pipeline.if_tid := 0.U
 
-  printf("inst=[%x] ", io.pipeline.inst)
-  printf("\n")
 }
 
 class IF_Pipeline_IO(implicit val conf: SEMPconfig) extends Bundle{
