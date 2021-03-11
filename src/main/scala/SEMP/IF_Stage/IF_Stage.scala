@@ -6,7 +6,7 @@ import chisel3.aop.Select.Printf
 import common._
 
 class IF_Stage_IO(implicit val conf: SEMPconfig) extends Bundle {
-  val imem = Flipped(new IMEM_IO)
+  val imem = Flipped(new IMEM_IO) // メモリとの接続
   val stall = Input(Bool())
   val flush = Input(Bool())
   val flush_tid = Input(UInt(conf.thread_width.W))  // どの実スレッドをフラッシュするか
@@ -17,39 +17,53 @@ class IF_Stage_IO(implicit val conf: SEMPconfig) extends Bundle {
 class IF_Stage(implicit val conf: SEMPconfig) extends Module{
   val io = IO(new IF_Stage_IO)
 
-  // レジスタ
-  val PC = RegInit(START_ADDR.U(conf.xlen.W))
+  // PCセレクタ - どちらのスレッドのPCを選択するか
+  val PC_selector = Module(new PC_seletor())
+  PC_selector.io := DontCare
 
-  // 配線
-  val PC_next = WireInit(START_ADDR.U(conf.xlen.W))
-  val IF_valid = WireInit(false.B)
+  // プログラムカウンタ
+  val PC1 = RegInit(START_ADDR.U(conf.xlen.W))
+  val PC2 = RegInit(START_ADDR.U(conf.xlen.W))
 
-  PC := PC_next;
-  when(reset.asBool()){
-    PC_next := START_ADDR.U
+  val IF_valid = WireInit(false.B)  // IF　が有効の出力
+
+
+  when(reset.asBool()){ //  リセットのとき
+    PC1 := START_ADDR.U
+    PC2 := START_ADDR.U
+
     IF_valid := false.B
-  }.elsewhen(io.exception){
-    PC_next := 0.U
 
-  }.elsewhen(io.stall){
-    PC_next := PC
-  }.elsewhen(io.flush){
-    PC_next := PC + 4.U
-  }.otherwise{
-    PC_next := PC + 4.U
+  }.elsewhen(io.exception){ //  例外のとき
+    PC1 := MTVEC.U
+    PC2 := MTVEC.U
+
+  }.elsewhen(io.stall){ //  ストールのとき
+    PC1 := PC1
+    PC2 := PC2
+
+  }.elsewhen(io.flush){ // フラッシュのとき
+    PC1 := PC1
+    PC2 := PC2
+
+  }.otherwise{          // 普通のとき
+    PC1 := PC1 + 8.U
+    PC2 := PC2 + 8.U
+
     IF_valid := true.B
   }
 
   // メモリへ
   io.imem.CLK := clock
-  io.imem.req_addr := PC_next
+  io.imem.req_addr := PC1
   io.imem.req_valid := true.B
 
   // パイプラインレジスタ
-  io.pipeline.pc := RegNext(PC)
+  io.pipeline.pc := RegNext(PC1)
   io.pipeline.inst := io.imem.resp_data
   io.pipeline.if_valid := IF_valid
-  io.pipeline.if_tid := 0.U
+  io.pipeline.if_tid := PC_selector.io.tid_out
+
 
 }
 

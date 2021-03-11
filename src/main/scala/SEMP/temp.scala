@@ -31,7 +31,9 @@ class temp(implicit val conf: SEMPconfig) extends Module{
 
   // debug
   printf("inst=[%x] ", IF_Stage.io.pipeline.inst)
-  printf("inst1_rd=[%x] ", ID_Stage.io.id_pipeline.inst1.rd)
+  printf("inst1 rd=[%x] ", ID_Stage.io.id_pipeline.inst1.rd)
+  printf("rs1=[%x] ", ID_Stage.io.id_pipeline.inst1.rs1)
+  printf("rs2=[%x] ", ID_Stage.io.id_pipeline.inst1.rs2)
   printf("\n")
 
 

@@ -5,6 +5,10 @@ import chisel3.util._
 
 trait SEMP_Constants{
 
+  // スレッド番号
+  val THREAD1 = 0.asUInt(1.W)
+  val THREAD2 = 1.asUInt(1.W)
+
   val OP_MSB = 6
   val OP_LSB = 0
   val OP_WIDTH = OP_MSB-OP_LSB + 1
@@ -33,7 +37,13 @@ trait SEMP_Constants{
 
   val INST_WIDTH = 32 // 1命令のbit幅
 
-  val START_ADDR = "h00000000"  // MTVEC + 0x100 ?
+  val START_ADDR = "h00000000"  // 最初のアドレス
+
+  // システムレジスタアドレス
+  // マシンのトラップハンドリングのベースレジスタ
+  // https://people.eecs.berkeley.edu/~krste/papers/riscv-privileged-v1.9.1.pdf
+  val MTVEC = 0x100
+
 }
 
 trait SEMP_OpConstants{
