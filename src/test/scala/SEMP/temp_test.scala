@@ -14,6 +14,9 @@ class temp_test extends FlatSpec with ChiselScalatestTester with Matchers {
       c.clock.setTimeout(10000)     // タイムアウト 設定
       c.clock.step(1)
 
+
+      c.clock.step(1)
+
       for (i <- 1 to 10) {
         c.clock.step(1)
       }

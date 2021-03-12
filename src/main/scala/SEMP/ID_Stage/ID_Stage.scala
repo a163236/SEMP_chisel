@@ -21,17 +21,18 @@ class ID_Stage(implicit val conf: SEMPconfig) extends Module{
   val decoder1 = Module(new decoder())
   val decoder2 = Module(new decoder())
 
-  // 各デコーダに命令をそれぞれいれる
+  // 各デコーダに命令をそれぞれ入れる
   decoder1.io.inst := io.if_pipeline.inst(INST_WIDTH-1, 0)
   decoder2.io.inst := io.if_pipeline.inst(INST_WIDTH*2-1, INST_WIDTH)
 
-
-  // 出力
-  // 各デコーダからの出力を受け取る
+  // 出力  各デコーダからの出力を受け取る
   io.id_pipeline.inst1 := decoder1.io.decoded_inst
-  io.id_pipeline.inst1_valid := true.B
   io.id_pipeline.inst2 := decoder2.io.decoded_inst
-  io.id_pipeline.inst2_valid := true.B
+  //      命令が有効化どうか
+  io.id_pipeline.inst1_valid := io.if_pipeline.if_valid // １つ目の命令は有効か？
+  io.id_pipeline.inst2_valid := (io.if_pipeline.if_valid &&
+    !(decoder2.io.decoded_inst.inst_type === Inst_J)) // ２つ目の命令は1つ目がJ命令なら無効
+
 }
 
 class ID_Pipeline_IO extends Bundle {

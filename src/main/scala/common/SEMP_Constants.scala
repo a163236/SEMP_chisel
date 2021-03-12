@@ -49,6 +49,17 @@ trait SEMP_Constants{
 trait SEMP_OpConstants{
   //************************************
 
+  // Inst_Type  デコードされた命令がどの形式の命令なのか
+  // どのリザーベーションステーションに放り込むか
+  val Inst_Type_WIDTH = 4
+  val Inst_R = 0.asUInt(Inst_Type_WIDTH.W)
+  val Inst_I = 1.asUInt(Inst_Type_WIDTH.W)  // ロード命令以外の即値命令
+  val Inst_S = 2.asUInt(Inst_Type_WIDTH.W)  // Store 命令
+  val Inst_B = 3.asUInt(Inst_Type_WIDTH.W)
+  val Inst_U = 4.asUInt(Inst_Type_WIDTH.W)
+  val Inst_J = 5.asUInt(Inst_Type_WIDTH.W)
+  val Inst_L = 6.asUInt(Inst_Type_WIDTH.W)  // Load 命令
+
   // PC Select
   /*
   val PC_Select_WIDTH = 2.W
@@ -68,5 +79,20 @@ trait SEMP_OpConstants{
   val BR_J   = 7.asUInt(BR_Type_WIDTH.W)  // Jump
   val BR_JR  = 8.asUInt(BR_Type_WIDTH.W)  // Jump Register
 
+  // ALU_OP,  ALUを使用するR形式とI形式のときに必要
+  val ALU_OP_WIDTH = 4
+  val ALU_ADD = 1.asUInt(ALU_OP_WIDTH.W)
+  val ALU_SUB = 2.asUInt(ALU_OP_WIDTH.W)
+  val ALU_SLL = 3.asUInt(ALU_OP_WIDTH.W)
+  val ALU_SRL = 4.asUInt(ALU_OP_WIDTH.W)
+  val ALU_SRA = 5.asUInt(ALU_OP_WIDTH.W)
+  val ALU_AND = 6.asUInt(ALU_OP_WIDTH.W)
+  val ALU_OR  = 7.asUInt(ALU_OP_WIDTH.W)
+  val ALU_XOR = 8.asUInt(ALU_OP_WIDTH.W)
+  val ALU_SLT = 9.asUInt(ALU_OP_WIDTH.W)
+  val ALU_SLTU= 10.asUInt(ALU_OP_WIDTH.W)
+  val ALU_COPYrs1= 11.asUInt(ALU_OP_WIDTH.W)
+  val ALU_COPYrs2= 12.asUInt(ALU_OP_WIDTH.W)
+  val ALU_X   = 0.asUInt(ALU_OP_WIDTH.W)
 
 }

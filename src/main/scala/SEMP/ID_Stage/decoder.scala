@@ -10,44 +10,35 @@ class decoder_IO(implicit val conf: SEMPconfig) extends Bundle{
   val decoded_inst = new ID_deocoded_info()
 }
 
-class ID_deocoded_info extends Bundle{
+class ID_deocoded_info extends Bundle{    // デコードされた命令情報 -> パイプラインで流す
+  val inst_type =   Output(UInt(Inst_Type_WIDTH.W))
   val inst_br_type= Output(UInt(BR_Type_WIDTH.W))
-  val op = Output(UInt(OP_WIDTH.W))
+  val alu_op =      Output(UInt(ALU_OP_WIDTH.W))
   val rd = Output(UInt(RD_WIDTH.W))
   val rs1 = Output(UInt(RS1_WIDTH.W))
   val rs2 = Output(UInt(RS2_WIDTH.W))
-  val funct3 = Output(UInt(FUNCT3_WIDTH.W))
-  val funct7 = Output(UInt(FUNCT7_WIDTH.W))
-
-  val aq_bit = Output(Bool())
-  val rl_bit = Output(Bool())
 }
 
 class decoder(implicit val conf: SEMPconfig) extends Module{
   val io = IO(new decoder_IO)
 
-  //
-  io.decoded_inst.op := io.inst(OP_MSB, OP_LSB)
+  // 命令を分解
   io.decoded_inst.rd := io.inst(RD_MSB, RD_LSB)
   io.decoded_inst.rs1 := io.inst(RS1_MSB, RS1_LSB)
   io.decoded_inst.rs2 := io.inst(RS2_MSB, RS2_LSB)
-  io.decoded_inst.funct3 := io.inst(FUNCT3_MSB, FUNCT3_LSB)
-  io.decoded_inst.funct7 := io.inst(FUNCT7_MSB, FUNCT7_LSB)
-  // A拡張
-  io.decoded_inst.aq_bit := io.inst(AQ_bit)
-  io.decoded_inst.rl_bit := io.inst(RL_bit)
 
   // control signal
   val csignals =
     ListLookup(io.inst,
-                    List(BR_N ), // 初期値
+                    List(Inst_R ,BR_N, ALU_X), // 初期値
       Array(           /* BR   */
                         /* type */
-        JALR    -> List(BR_N),
-        BEQ     -> List(BR_EQ),
-        LW      -> List(BR_N),
-        SW      -> List(BR_N),
-        ADD     -> List(BR_N),
+        JALR    -> List(Inst_J, BR_N,  ALU_X),
+        BEQ     -> List(Inst_B, BR_EQ, ALU_X),
+        LW      -> List(Inst_L, BR_N,  ALU_X),
+        SW      -> List(Inst_S, BR_N,  ALU_X),
+        ADD     -> List(Inst_R, BR_N,  ALU_ADD),
+        ADDI    -> List(Inst_I, BR_N,  ALU_ADD),
 
         /*
         ECALL   -> List(),
@@ -58,8 +49,10 @@ class decoder(implicit val conf: SEMPconfig) extends Module{
       ))
 
   // 上のリストで選ばれたものを変数にぶち込む
-  val cs_br_type :: Nil  = csignals
-  io.decoded_inst.inst_br_type := cs_br_type
+  val cs_inst_type :: cs_br_type :: cs_alu_op :: Nil  = csignals
 
+  io.decoded_inst.inst_type := cs_inst_type
+  io.decoded_inst.inst_br_type := cs_br_type
+  io.decoded_inst.alu_op := cs_alu_op
 
 }

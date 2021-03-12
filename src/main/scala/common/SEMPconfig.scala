@@ -18,4 +18,5 @@ case class SEMPconfig(
 
   val fetch_width = INST_WIDTH * fetch_num_param  // 命令フェッチのbit幅
   val thread_width = thread_num_param.U.getWidth  // スレッド数のbit幅
+  val preg_width = xpregnum.U.getWidth    // 物理レジスタのbit幅
 }

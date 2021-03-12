@@ -2,7 +2,6 @@ package SEMP.IF_Stage
 
 import SEMP.Memory.IMEM_IO
 import chisel3._
-import chisel3.aop.Select.Printf
 import common._
 
 class IF_Stage_IO(implicit val conf: SEMPconfig) extends Bundle {
@@ -37,14 +36,17 @@ class IF_Stage(implicit val conf: SEMPconfig) extends Module{
   }.elsewhen(io.exception){ //  例外のとき
     PC1 := MTVEC.U
     PC2 := MTVEC.U
+    IF_valid := true.B
 
   }.elsewhen(io.stall){ //  ストールのとき
     PC1 := PC1
     PC2 := PC2
+    IF_valid := false.B
 
   }.elsewhen(io.flush){ // フラッシュのとき
     PC1 := PC1
     PC2 := PC2
+    IF_valid := false.B
 
   }.otherwise{          // 普通のとき
     PC1 := PC1 + 8.U
@@ -53,16 +55,16 @@ class IF_Stage(implicit val conf: SEMPconfig) extends Module{
     IF_valid := true.B
   }
 
-  // メモリへ
+  // 命令メモリへのリクエスト
   io.imem.CLK := clock
   io.imem.req_addr := PC1
   io.imem.req_valid := true.B
 
   // パイプラインレジスタ
-  io.pipeline.pc := RegNext(PC1)
+  io.pipeline.pc := RegNext(PC1)    // パイプラインとしてレジスタを噛ませる
   io.pipeline.inst := io.imem.resp_data
-  io.pipeline.if_valid := IF_valid
-  io.pipeline.if_tid := PC_selector.io.tid_out
+  io.pipeline.if_valid := RegNext(IF_valid)
+  io.pipeline.if_tid := RegNext(PC_selector.io.tid_out)
 
 
 }

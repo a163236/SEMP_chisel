@@ -9,7 +9,7 @@ import chisel3._
 class IF_Stage_test extends FlatSpec with ChiselScalatestTester with Matchers{
   "" should "" in{
     implicit val conf = SEMPconfig(simulation = true)
-    test(new IF_Stage){c =>
+    test(new IF_Stage).withAnnotations(Seq(VerilatorBackendAnnotation, WriteVcdAnnotation)){c =>
 
       c.clock.step(1)
       c.clock.step(1)

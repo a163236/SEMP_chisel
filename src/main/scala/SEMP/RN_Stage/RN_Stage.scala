@@ -29,9 +29,10 @@ class RN_Stage(implicit val conf: SEMPconfig) extends Module{
   maptable_t1(io.id_pipeline.inst1.rd) := freelist(tail)
   tail := tail - 1.U
 
-
+  io.rn_pipeline.rd_renamed := freelist(tail)
+  printf("%x ", io.rn_pipeline.rd_renamed)
 }
 
-class RN_Pipline_IO extends Bundle{
-
+class RN_Pipline_IO(implicit val conf: SEMPconfig) extends Bundle{
+  val rd_renamed = Output(UInt(conf.preg_width.W))
 }
