@@ -26,5 +26,4 @@ class RS_Stage extends Module{
   val io = IO(new RS_Stage_IO)
   val a = new Int_RS
   val int_RS = Reg(Vec(4 , a))    // 整数命令のリザーベーションステーション
-
 }
