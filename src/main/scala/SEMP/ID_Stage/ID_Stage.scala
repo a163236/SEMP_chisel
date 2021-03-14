@@ -40,5 +40,6 @@ class ID_Pipeline_IO extends Bundle {
   val inst1_valid = Output(Bool())
   val inst2 = new ID_deocoded_info()
   val inst2_valid = Output(Bool())
+  val tid = Output(Bool())
 }
 

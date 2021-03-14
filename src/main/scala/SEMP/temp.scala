@@ -11,7 +11,7 @@ class temp(implicit val conf: SEMPconfig) extends Module{
   val io = IO(new Bundle() {
     val if_pipeline = new IF_Pipeline_IO()
     val id_pipeline = new ID_Pipeline_IO()
-    val rn_pipeline = new RN_Pipeline_IO()
+    val rn_pipeline = new RN_Pipeline()
   })
 
   val IF_Stage = Module(new IF_Stage)
