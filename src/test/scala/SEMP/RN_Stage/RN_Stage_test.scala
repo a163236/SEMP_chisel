@@ -21,9 +21,6 @@ class RN_Stage_test extends FlatSpec with ChiselScalatestTester with Matchers {
       c.io.id_pipeline.inst1.rd.poke(1.U)
       c.io.id_pipeline.inst1.rs1.poke(2.U)
       c.io.id_pipeline.inst1.rs2.poke(3.U)
-      c.io.id_pipeline.inst2.rd.poke(4.U)
-      c.io.id_pipeline.inst2.rs1.poke(5.U)
-      c.io.id_pipeline.inst2.rs2.poke(6.U)
       c.clock.step(1)
 
       c.io.id_pipeline.inst1.rd.poke(7.U)
@@ -31,10 +28,6 @@ class RN_Stage_test extends FlatSpec with ChiselScalatestTester with Matchers {
       c.io.id_pipeline.inst1.rs2.poke(9.U)
       c.clock.step(1)
 
-      c.io.id_pipeline.inst1.rd.poke(1.U)
-      c.io.id_pipeline.inst1.rs1.poke(2.U)
-      c.io.id_pipeline.inst1.rs2.poke(3.U)
-      c.clock.step(1)
 
       c.io.stall_in.poke(true.B)
       c.clock.step(1)

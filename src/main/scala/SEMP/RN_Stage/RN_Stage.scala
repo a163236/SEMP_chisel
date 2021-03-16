@@ -29,7 +29,7 @@ class RegisterFile(implicit val conf: SEMPconfig) extends Bundle {
 
 class Maptable(implicit val conf: SEMPconfig) extends Bundle {
   val Rdy = Bool()    // reset or flush 後にrdレジスタをマッピングしたことあるかどうか  retireでは使用しない
-  val value = UInt(conf.xlen.W)
+  val value = UInt(conf.preg_width.W)
 }
 
 /*
@@ -44,6 +44,7 @@ class Maptable(implicit val conf: SEMPconfig) extends Bundle {
     rs の読み出し方法
   futureテーブルのRdyが有効ならそこからRegfileを検索，Rdyが無効ならretireテーブルから検索
   物理レジスタファイルのRdyが無効のときはリザベーションでオペランド待ち
+  futureテーブルのRdyが無効でretireテーブルのRdyも無効のときは 0
 
     rd のマッピング
   futureテーブルのRdyを立てる．検索したレジスタファイルのRdyを消す．
@@ -69,6 +70,23 @@ class RN_Stage(implicit val conf: SEMPconfig) extends Module {
   freequeue.io := DontCare
   // 配線のデフォルト設定
   io := DontCare
+
+  // リセット無+例外無+フラッシュ無+命令1が有効+フリーキューが空でない
+  // 今後はこの信号線を使ってやろうかなと思っている．．．
+  val inst1_rename_valid = !reset.asBool() || !initializing || !io.stall_in ||
+    !(io.except && io.except_tid===io.id_pipeline.tid) ||
+    !(io.flush && io.flush_tid===io.id_pipeline.tid) ||
+    io.id_pipeline.inst1_valid ||
+    (freequeue.io.count>=2.U)
+
+
+  val inst2_renam_valid = !reset.asBool() || !initializing || !io.stall_in ||
+    !(io.except && io.except_tid===io.id_pipeline.tid) ||
+    !(io.flush && io.flush_tid===io.id_pipeline.tid) ||
+    io.id_pipeline.inst2_valid  ||
+    (freequeue.io.count>=2.U)
+
+
 
 
   //  パイプラインレジスタ郡
@@ -117,6 +135,10 @@ class RN_Stage(implicit val conf: SEMPconfig) extends Module {
     io.stall_out := io.stall_in // IDにストールを送信  必要ないかも
     // パイプラインレジスタをストール
     PipelineRegs := PipelineRegs
+    // ストールのときはリネームだけOK
+    freequeue.io.deq1_ready := false.B
+    freequeue.io.deq2_ready := false.B
+
     // validを無効にしなければ．．勝手にリネームされる
 
 
@@ -157,6 +179,7 @@ class RN_Stage(implicit val conf: SEMPconfig) extends Module {
       freequeue.io.deq1_ready := true.B    // フリーキューから取り出してよい
       regfile(freequeue.io.deq1).Rdy := false.B
       future_map_t1(io.id_pipeline.inst1.rd).value := freequeue.io.deq1
+      future_map_t1(io.id_pipeline.inst1.rd).Rdy := true.B
       PipelineRegs.inst1.rd_renamed := freequeue.io.deq1
     }
 
@@ -180,11 +203,13 @@ class RN_Stage(implicit val conf: SEMPconfig) extends Module {
       PipelineRegs.inst2.rs2_renamed := future_map_t1(io.id_pipeline.inst2.rs2).value
       PipelineRegs.inst2.rs2_Rdy := false.B   // ソースオペランド getできず．．
     }
+
     // フリーリストからRDレジスタマッピング
     when(freequeue.io.count=/=0.U) { // フリーキューが空ではない==リネーム可能なとき
       freequeue.io.deq2_ready := true.B    // フリーキューから取り出してよい
       regfile(freequeue.io.deq2).Rdy := false.B
       future_map_t1(io.id_pipeline.inst2.rd).value := freequeue.io.deq2
+      future_map_t1(io.id_pipeline.inst2.rd).Rdy := true.B
       PipelineRegs.inst2.rd_renamed := freequeue.io.deq2
     }
   }
@@ -195,6 +220,7 @@ class RN_Stage(implicit val conf: SEMPconfig) extends Module {
 
     when(io.rob.tid === THREAD1){  // スレッド1のリタイアのとき
       regfile(io.rob.preg).Rdy := true.B // 物理レジスタファイルを読み出し可能 Rdyをアサート
+      retire_map_t1(io.rob.logreg).value := io.rob.preg // リタイアマップのマッピングをコミットする
 
     }.elsewhen(io.rob.tid === THREAD2){}
 

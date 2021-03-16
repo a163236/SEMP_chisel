@@ -9,6 +9,6 @@ import common._
 object ElaborateVerilog extends App {
 
   implicit val config = new SEMPconfig(synthesize = true)
-  val verilogString = (new chisel3.stage.ChiselStage).emitVerilog(new pipe_rensyu())
+  val verilogString = (new chisel3.stage.ChiselStage).emitVerilog(new RN_Stage())
   print(verilogString)
 }
