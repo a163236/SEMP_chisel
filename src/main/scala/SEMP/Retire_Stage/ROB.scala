@@ -12,7 +12,12 @@ class RN_Return(implicit val conf: SEMPconfig) extends Bundle{  // フリーリ�
   val valid = Bool()    // 有効
 }
 
+class ROB_IO(implicit val conf: SEMPconfig) extends Bundle{
 
-class ROB {
+}
 
+class ROB(implicit val conf: SEMPconfig) extends Module{
+  val io = IO(new ROB_IO())
+
+  
 }

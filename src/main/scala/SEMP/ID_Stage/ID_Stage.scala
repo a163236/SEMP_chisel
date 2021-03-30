@@ -31,7 +31,7 @@ class ID_Stage(implicit val conf: SEMPconfig) extends Module{
   //      命令が有効化どうか
   io.id_pipeline.inst1_valid := io.if_pipeline.if_valid // １つ目の命令は有効か？
   io.id_pipeline.inst2_valid := (io.if_pipeline.if_valid &&
-    !(decoder2.io.decoded_inst.inst_type === Inst_J)) // ２つ目の命令は1つ目がJ命令なら無効
+    !(decoder2.io.decoded_inst.inst_br_type === Inst_J)) // ２つ目の命令は1つ目がJ命令なら無効
 
 }
 
