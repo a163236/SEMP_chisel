@@ -2,7 +2,7 @@ package SEMP.RS_Stage
 
 import chisel3._
 
-// 2in 1out のfifo
+// 2in 1out のfifo　リングバッファ
 
 class fifo_io extends Bundle{
   val in = Input(UInt(32.W))
