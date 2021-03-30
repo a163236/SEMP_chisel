@@ -3,6 +3,11 @@ package SEMP.Retire_Stage
 import chisel3._
 import common._
 
+/*
+ 2入力 2コミット
+ 普通のリングバッファを使う スレッド毎にROBを所持
+ */
+
 class RN_Return(implicit val conf: SEMPconfig) extends Bundle{  // フリーリストを解放する出力
   // ROBがフラッシュされてもフリーキューにはちゃんと2つずつ返す
   val preg = UInt(conf.preg_width.W)  // リネーム後の物理レジスタタグ
@@ -19,5 +24,5 @@ class ROB_IO(implicit val conf: SEMPconfig) extends Bundle{
 class ROB(implicit val conf: SEMPconfig) extends Module{
   val io = IO(new ROB_IO())
 
-  
+
 }
