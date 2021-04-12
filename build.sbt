@@ -10,7 +10,10 @@ lazy val root = (project in file("."))
     libraryDependencies ++= Seq(
       "edu.berkeley.cs" %% "chisel3" % "latest.release",
       "org.easysoc" %% "layered-firrtl" % "latest.release",
-      "edu.berkeley.cs" %% "chiseltest" % "latest.release"
+      "edu.berkeley.cs" %% "chiseltest" % "latest.release",
+      "edu.berkeley.cs" %% "rocketchip" % "latest.release", // rocketchipの機能を使える
+      "edu.berkeley.cs" %% "dsptools" % "latest.release",     //dsptool
+      "edu.berkeley.cs" % "ip-contributions" % "latest.release" // chisel ip-contributions  // import chisel.lib
     ),
     scalacOptions ++= Seq(
       "-Xsource:2.11",
